@@ -60,6 +60,11 @@ static volatile uint32_t _timer_count = 0;
 //--------------------------------------------------------------------+
 static bool check_dfu_mode(void);
 
+void board_wait_ms(uint16_t ms) {
+  uint32_t start = _timer_count;
+  while(_timer_count < (start + ms)) {}
+}
+
 int main(void)
 {
   board_init();
