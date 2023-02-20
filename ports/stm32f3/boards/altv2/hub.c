@@ -33,16 +33,99 @@ void HAL_GPIO_SetInput(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin) {
     HAL_GPIO_Init(GPIOx, &GPIO_InitStruct);
 };
 
+void HAL_GPIO_SetAnalog(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin) {
+    GPIO_InitTypeDef  GPIO_InitStruct;
+    GPIO_InitStruct.Pin = GPIO_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOx, &GPIO_InitStruct);
+};
+
+uint32_t HAL_ADC_Read(ADC_HandleTypeDef* hadc, uint32_t channel) {
+  ADC_ChannelConfTypeDef sConfig = {
+    .Channel = channel,
+    .Rank = ADC_REGULAR_RANK_1,
+    .SamplingTime = ADC_SAMPLETIME_601CYCLES_5,
+  };
+
+  HAL_ADC_ConfigChannel(hadc, &sConfig);
+
+  HAL_ADC_Start(hadc);
+  HAL_ADC_PollForConversion(hadc, 1000);
+
+  uint32_t ret = HAL_ADC_GetValue(hadc);
+
+  HAL_ADC_Stop(hadc);
+
+  return ret;
+}
+
 void board_wait_ms(uint16_t ms);
 // #define board_wait_ms(ms)
 
+uint32_t v_con_1;
+uint32_t v_con_2;
+
 // void board_init_extra(void) {
 void board_dfu_init_extra(void) {
+  // ADC_HandleTypeDef adc2 = {
+  //   .Instance = ADC2,
+  //   .Init = {
+  //     .ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2,
+  //     .ExternalTrigConv = ADC_SOFTWARE_START,
+  //     .NbrOfConversion = 1,
+  //     .ContinuousConvMode = ENABLE,
+  //   }
+  // };
+  // ADC_HandleTypeDef adc3 = {
+  //   .Instance = ADC3,
+  //   .Init = {
+  //     .ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2,
+  //     .ExternalTrigConv = ADC_SOFTWARE_START,
+  //     .NbrOfConversion = 1,
+  //     .ContinuousConvMode = ENABLE,
+  //   }
+  // };
+    ADC_HandleTypeDef adc2 = {0};
+    adc2.Instance = ADC2;
+    adc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+    adc2.Init.Resolution = ADC_RESOLUTION_12B;
+    adc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
+    adc2.Init.ContinuousConvMode = ENABLE;
+    adc2.Init.DiscontinuousConvMode = DISABLE;
+    adc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    adc2.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+    adc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+    adc2.Init.NbrOfConversion = 1;
+    adc2.Init.DMAContinuousRequests = ENABLE;
+    adc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+
+    ADC_HandleTypeDef adc3 = {0};
+    adc3.Instance = ADC3;
+    adc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+    adc3.Init.Resolution = ADC_RESOLUTION_12B;
+    adc3.Init.ScanConvMode = ADC_SCAN_DISABLE;
+    adc3.Init.ContinuousConvMode = ENABLE;
+    adc3.Init.DiscontinuousConvMode = DISABLE;
+    adc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    adc3.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+    adc3.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+    adc3.Init.NbrOfConversion = 1;
+    adc3.Init.DMAContinuousRequests = ENABLE;
+    adc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+
+  __HAL_RCC_ADC12_CLK_ENABLE();
+  __HAL_RCC_ADC34_CLK_ENABLE();
+
   board_timer_start(1);
 
   // initial state
-  HAL_GPIO_SetInput(GPIOA, GPIO_PIN_7);
-  HAL_GPIO_SetInput(GPIOB, GPIO_PIN_0);
+  HAL_GPIO_SetAnalog(GPIOA, GPIO_PIN_7);
+  HAL_GPIO_SetAnalog(GPIOB, GPIO_PIN_0);
+
+  HAL_ADC_Init(&adc2);
+  HAL_ADC_Init(&adc3);
 
   // reset hub
   HAL_GPIO_SetOutput(GPIOD, GPIO_PIN_2);
@@ -53,10 +136,8 @@ void board_dfu_init_extra(void) {
 
   board_wait_ms(500); // Allow power dissipation time on CC lines
 
-  uint16_t v_con_1 = 0;
-  uint16_t v_con_2 = 0;
-  (void)v_con_1;
-  (void)v_con_2;
+  v_con_1 = HAL_ADC_Read(&adc2, ADC_CHANNEL_4);
+  v_con_2 = HAL_ADC_Read(&adc3, ADC_CHANNEL_12);
 
   // TODO: dynamic port port configure logic?
   HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_13);
@@ -71,9 +152,7 @@ void board_dfu_init_extra(void) {
   HAL_GPIO_SetOutput(GPIOA, GPIO_PIN_15);
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, 0);
 
-  // force left?
-  if (1) {
-  // if (v_con_1 > v_con_2) {
+  if (v_con_1 > v_con_2) {
     HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_12);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, 0);
 
