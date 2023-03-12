@@ -41,8 +41,18 @@ __attribute__((weak)) void board_init_extra(void) {}
 __attribute__((weak)) void board_dfu_init_extra(void) {}
 __attribute__((weak)) void board_app_jump_extra(void) {}
 
+static bool reset_was_option_bytes = false;
+
+bool board_should_protect_bootloader(void)
+{
+  return !reset_was_option_bytes;
+}
+
 void board_init(void)
 {
+  // Check asap to ensure correct reason
+  reset_was_option_bytes = !!(__HAL_RCC_GET_FLAG(RCC_FLAG_OBLRST));
+
   clock_init();
   SystemCoreClockUpdate();
 
