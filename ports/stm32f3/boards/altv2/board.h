@@ -67,12 +67,12 @@
 #define USB_VID           0x359B
 #define USB_PID           0x0010
 #define USB_MANUFACTURER  "Drop Inc."
-#define USB_PRODUCT       "ALTv2 Bootloader"
+#define USB_PRODUCT       "ALTv2 BL"
 
 #define UF2_PRODUCT_NAME  USB_MANUFACTURER " " USB_PRODUCT
 #define UF2_BOARD_ID      "ALTv2"
 #define UF2_VOLUME_LABEL  "MD_BOOT"
-#define UF2_INDEX_URL     "https://drop.com/home"
+// #define UF2_INDEX_URL     "https://drop.com/home"
 
 //--------------------------------------------------------------------+
 // UART

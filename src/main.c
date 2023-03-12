@@ -237,6 +237,7 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
 // Indicator
 //--------------------------------------------------------------------+
 
+#if 0
 static uint32_t _indicator_state = STATE_BOOTLOADER_STARTED;
 static uint8_t _indicator_rgb[3];
 
@@ -270,11 +271,17 @@ void indicator_set(uint32_t state)
     default: break; // nothing to do
   }
 }
+#else
+void indicator_set(uint32_t state)
+{
+  (void)state;
+}
+#endif
 
 void board_timer_handler(void)
 {
   _timer_count++;
-
+#if 0
   switch (_indicator_state)
   {
     case STATE_USB_UNPLUGGED:
@@ -307,6 +314,7 @@ void board_timer_handler(void)
 
     default: break; // nothing to do
   }
+#endif
 }
 
 //--------------------------------------------------------------------+

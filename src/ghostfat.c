@@ -142,6 +142,7 @@ const char infoUf2File[] =
     "Board-ID: " UF2_BOARD_ID "\r\n"
     "Date: " COMPILE_DATE "\r\n";
 
+#ifdef UF2_INDEX_URL
 const char indexFile[] =
     "<!doctype html>\n"
     "<html>"
@@ -151,6 +152,7 @@ const char indexFile[] =
     "</script>"
     "</body>"
     "</html>\n";
+#endif
 
 #ifdef TINYUF2_FAVICON_HEADER
 #include TINYUF2_FAVICON_HEADER
@@ -160,7 +162,9 @@ const char autorunFile[] = "[Autorun]\r\nIcon=FAVICON.ICO\r\n";
 // size of CURRENT.UF2:
 static FileContent_t info[] = {
     {.name = "INFO_UF2TXT", .content = infoUf2File , .size = sizeof(infoUf2File) - 1},
+#ifdef UF2_INDEX_URL
     {.name = "INDEX   HTM", .content = indexFile   , .size = sizeof(indexFile  ) - 1},
+#endif
 #ifdef TINYUF2_FAVICON_HEADER
     {.name = "AUTORUN INF", .content = autorunFile , .size = sizeof(autorunFile) - 1},
     {.name = "FAVICON ICO", .content = favicon_data, .size = favicon_len            },
