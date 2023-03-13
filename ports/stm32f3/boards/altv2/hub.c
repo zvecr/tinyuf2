@@ -185,20 +185,20 @@ void board_dfu_init_extra(void) {
 
 
 void board_app_jump_extra(void) {
-  // HAL_GPIO_DeInit(GPIOA, GPIO_PIN_7);
-  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0);
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_7);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0);
 
-  // HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
+  HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
 
-  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
-  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_15);
-  // HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8);
-  // HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_15);
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8);
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
 
-  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12);
-  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_14);
-  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8);
-  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_9);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_14);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_9);
 
   // HAL_ADC_DeInit(&adc2);
   // HAL_ADC_DeInit(&adc3);
