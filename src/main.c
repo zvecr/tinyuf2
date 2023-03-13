@@ -205,7 +205,7 @@ void tud_umount_cb(void)
 //--------------------------------------------------------------------+
 // USB HID
 //--------------------------------------------------------------------+
-
+#if CFG_TUD_HID
 // Invoked when received GET_REPORT control request
 // Application must fill buffer report's content and return its length.
 // Return zero will cause the stack to STALL request
@@ -232,6 +232,7 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
   (void) buffer;
   (void) bufsize;
 }
+#endif
 
 //--------------------------------------------------------------------+
 // Indicator

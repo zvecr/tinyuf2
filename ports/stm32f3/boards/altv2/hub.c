@@ -67,6 +67,10 @@ void board_wait_ms(uint16_t ms);
 uint32_t v_con_1;
 uint32_t v_con_2;
 
+    ADC_HandleTypeDef adc2 = {0};
+
+    ADC_HandleTypeDef adc3 = {0};
+
 // void board_init_extra(void) {
 void board_dfu_init_extra(void) {
   // ADC_HandleTypeDef adc2 = {
@@ -87,7 +91,6 @@ void board_dfu_init_extra(void) {
   //     .ContinuousConvMode = ENABLE,
   //   }
   // };
-    ADC_HandleTypeDef adc2 = {0};
     adc2.Instance = ADC2;
     adc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
     adc2.Init.Resolution = ADC_RESOLUTION_12B;
@@ -101,7 +104,6 @@ void board_dfu_init_extra(void) {
     adc2.Init.DMAContinuousRequests = ENABLE;
     adc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    ADC_HandleTypeDef adc3 = {0};
     adc3.Instance = ADC3;
     adc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
     adc3.Init.Resolution = ADC_RESOLUTION_12B;
@@ -183,18 +185,21 @@ void board_dfu_init_extra(void) {
 
 
 void board_app_jump_extra(void) {
-  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_7);
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0);
+  // HAL_GPIO_DeInit(GPIOA, GPIO_PIN_7);
+  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0);
 
-  HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
+  // HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
 
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_15);
-  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8);
-  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
+  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
+  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_15);
+  // HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8);
+  // HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
 
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12);
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_14);
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8);
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_9);
+  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12);
+  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_14);
+  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8);
+  // HAL_GPIO_DeInit(GPIOB, GPIO_PIN_9);
+
+  // HAL_ADC_DeInit(&adc2);
+  // HAL_ADC_DeInit(&adc3);
 }
