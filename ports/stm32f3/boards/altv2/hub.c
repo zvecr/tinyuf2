@@ -1,6 +1,8 @@
 #include "board_api.h"
 #include "stm32f3xx_hal.h"
 
+void board_wait_ms(uint16_t ms);
+
 #define S_UP        B12
 #define E_UP_N      B13
 #define S_DN1       B14
@@ -61,36 +63,13 @@ uint32_t HAL_ADC_Read(ADC_HandleTypeDef* hadc, uint32_t channel) {
   return ret;
 }
 
-void board_wait_ms(uint16_t ms);
-// #define board_wait_ms(ms)
+// static ADC_HandleTypeDef adc2 = {0};
+// static ADC_HandleTypeDef adc3 = {0};
 
-uint32_t v_con_1;
-uint32_t v_con_2;
-
+void board_dfu_init_extra(void) {
     ADC_HandleTypeDef adc2 = {0};
-
     ADC_HandleTypeDef adc3 = {0};
 
-// void board_init_extra(void) {
-void board_dfu_init_extra(void) {
-  // ADC_HandleTypeDef adc2 = {
-  //   .Instance = ADC2,
-  //   .Init = {
-  //     .ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2,
-  //     .ExternalTrigConv = ADC_SOFTWARE_START,
-  //     .NbrOfConversion = 1,
-  //     .ContinuousConvMode = ENABLE,
-  //   }
-  // };
-  // ADC_HandleTypeDef adc3 = {
-  //   .Instance = ADC3,
-  //   .Init = {
-  //     .ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2,
-  //     .ExternalTrigConv = ADC_SOFTWARE_START,
-  //     .NbrOfConversion = 1,
-  //     .ContinuousConvMode = ENABLE,
-  //   }
-  // };
     adc2.Instance = ADC2;
     adc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
     adc2.Init.Resolution = ADC_RESOLUTION_12B;
@@ -120,63 +99,52 @@ void board_dfu_init_extra(void) {
   __HAL_RCC_ADC12_CLK_ENABLE();
   __HAL_RCC_ADC34_CLK_ENABLE();
 
-  board_timer_start(1);
-
   // initial state
   HAL_GPIO_SetAnalog(GPIOA, GPIO_PIN_7);
   HAL_GPIO_SetAnalog(GPIOB, GPIO_PIN_0);
 
+  HAL_GPIO_SetOutput(GPIOD, GPIO_PIN_2);
+
+  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_13);
+  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_15);
+  HAL_GPIO_SetOutput(GPIOA, GPIO_PIN_8);
+  HAL_GPIO_SetOutput(GPIOA, GPIO_PIN_15);
+
+  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_12);
+  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_14);
+  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_8);
+  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_9);
+
   HAL_ADC_Init(&adc2);
   HAL_ADC_Init(&adc3);
 
+  board_timer_start(1);
+
   // reset hub
-  HAL_GPIO_SetOutput(GPIOD, GPIO_PIN_2);
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, 0);
   board_wait_ms(100);
-  HAL_GPIO_SetOutput(GPIOD, GPIO_PIN_2);
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, 1);
 
   board_wait_ms(500); // Allow power dissipation time on CC lines
 
-  v_con_1 = HAL_ADC_Read(&adc2, ADC_CHANNEL_4);
-  v_con_2 = HAL_ADC_Read(&adc3, ADC_CHANNEL_12);
+  uint32_t v_con_1 = HAL_ADC_Read(&adc2, ADC_CHANNEL_4);
+  uint32_t v_con_2 = HAL_ADC_Read(&adc3, ADC_CHANNEL_12);
 
   // TODO: dynamic port port configure logic?
-  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_13);
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, 0);
-
-  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_15);
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, 0);
-
-  HAL_GPIO_SetOutput(GPIOA, GPIO_PIN_8);
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, 1);
-
-  HAL_GPIO_SetOutput(GPIOA, GPIO_PIN_15);
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, 0);
 
   if (v_con_1 > v_con_2) {
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_12);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, 0);
-
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_14);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, 1);
-
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_8);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 1);
-
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_9);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, 0);
   } else {
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_12);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, 1);
-
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_14);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, 0);
-
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_8);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 0);
-
-    HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_9);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, 1);
   }
 
@@ -200,6 +168,7 @@ void board_app_jump_extra(void) {
   HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8);
   HAL_GPIO_DeInit(GPIOB, GPIO_PIN_9);
 
+  // TODO: Firmware breaks but saves 0.5K
   // HAL_ADC_DeInit(&adc2);
   // HAL_ADC_DeInit(&adc3);
 }
