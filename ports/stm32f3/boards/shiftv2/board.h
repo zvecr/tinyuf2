@@ -4,7 +4,7 @@
 // USB UF2
 //--------------------------------------------------------------------+
 #define USB_PID           0x0010
-#define USB_PRODUCT_NAME  "CTRLv2"
+#define USB_PRODUCT_NAME  "SHIFTv2"
 #define UF2_BOARD_VERSION "2.0.0"
 
 #include "../_drop/board.h"
