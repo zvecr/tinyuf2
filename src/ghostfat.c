@@ -140,6 +140,9 @@ const char infoUf2File[] =
     "TinyUF2 Bootloader " UF2_VERSION "\r\n"
     "Model: " UF2_PRODUCT_NAME "\r\n"
     "Board-ID: " UF2_BOARD_ID "\r\n"
+#ifdef UF2_BOARD_VERSION
+    "Board-Version: " UF2_BOARD_VERSION "\r\n"
+#endif
     "Date: " COMPILE_DATE "\r\n";
 
 #ifdef UF2_INDEX_URL

@@ -102,14 +102,10 @@ void board_dfu_init_extra(void) {
   __HAL_RCC_ADC34_CLK_ENABLE();
 
   // initial state
-  HAL_GPIO_SetOutput(GPIOA, GPIO_PIN_4);
-  HAL_GPIO_SetOutput(GPIOA, GPIO_PIN_7);
-  HAL_GPIO_SetOutput(GPIOC, GPIO_PIN_4);
-  HAL_GPIO_SetOutput(GPIOB, GPIO_PIN_0);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, 0);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, 0);
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, 0);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 0);
+  HAL_GPIO_SetAnalog(GPIOA, GPIO_PIN_4);
+  HAL_GPIO_SetAnalog(GPIOA, GPIO_PIN_7);
+  HAL_GPIO_SetAnalog(GPIOC, GPIO_PIN_4);
+  HAL_GPIO_SetAnalog(GPIOB, GPIO_PIN_0);
 
   HAL_GPIO_SetOutput(GPIOD, GPIO_PIN_2);
 
@@ -127,12 +123,6 @@ void board_dfu_init_extra(void) {
   HAL_ADC_Init(&adc3);
 
   board_timer_start(1);
-
-  board_wait_ms(20);
-  HAL_GPIO_SetAnalog(GPIOA, GPIO_PIN_4);
-  HAL_GPIO_SetAnalog(GPIOA, GPIO_PIN_7);
-  HAL_GPIO_SetAnalog(GPIOC, GPIO_PIN_4);
-  HAL_GPIO_SetAnalog(GPIOB, GPIO_PIN_0);
 
   // reset hub
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, 0);
