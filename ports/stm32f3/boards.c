@@ -37,8 +37,22 @@
 
 static UART_HandleTypeDef UartHandle;
 
+__attribute__((weak)) void board_init_extra(void) {}
+__attribute__((weak)) void board_dfu_init_extra(void) {}
+__attribute__((weak)) void board_app_jump_extra(void) {}
+
+static bool reset_was_option_bytes = false;
+
+bool board_should_protect_bootloader(void)
+{
+  return !reset_was_option_bytes;
+}
+
 void board_init(void)
 {
+  // Check asap to ensure correct reason
+  reset_was_option_bytes = !!(__HAL_RCC_GET_FLAG(RCC_FLAG_OBLRST));
+
   clock_init();
   SystemCoreClockUpdate();
 
@@ -51,7 +65,9 @@ void board_init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
 
+  #if defined(BUTTON_PIN) || defined(LED_PIN)
   GPIO_InitTypeDef  GPIO_InitStruct;
+  #endif
 
   #ifdef BUTTON_PIN
   GPIO_InitStruct.Pin = BUTTON_PIN;
@@ -98,6 +114,8 @@ void board_init(void)
   UartHandle.Init.Mode       = UART_MODE_TX_RX;
   HAL_UART_Init(&UartHandle);
   #endif
+
+  board_init_extra();
 }
 
 void board_dfu_init(void)
@@ -115,6 +133,8 @@ void board_dfu_init(void)
 
   // Enable USB clock
   __HAL_RCC_USB_CLK_ENABLE();
+
+  board_dfu_init_extra();
 }
 
 void board_reset(void)
@@ -149,6 +169,8 @@ void board_app_jump(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
+
+  board_app_jump_extra();
 
   #ifdef BUTTON_PIN
   HAL_GPIO_DeInit(BUTTON_PORT, BUTTON_PIN);
@@ -217,7 +239,10 @@ uint8_t board_usb_get_serial(uint8_t serial_id[16])
 
 void board_led_write(uint32_t state)
 {
+  (void)state;
+  #ifdef LED_PIN
   HAL_GPIO_WritePin(LED_PORT, LED_PIN, state ? LED_STATE_ON : (1-LED_STATE_ON));
+  #endif
 }
 
 #if NEOPIXEL_NUMBER

@@ -22,4 +22,8 @@ self-update: $(BUILD)/$(OUTNAME).uf2
 
 $(BUILD)/$(OUTNAME).uf2: $(BUILD)/$(OUTNAME).hex
 	@echo CREATE $@
+  ifdef UF2_DEVICE_TYPE_ID
+	$(PYTHON3) $(TOP)/lib/uf2/utils/uf2conv.py -f $(UF2_FAMILY_ID) -t $(UF2_DEVICE_TYPE_ID) -c -o $@ $^
+  else
 	$(PYTHON3) $(TOP)/lib/uf2/utils/uf2conv.py -f $(UF2_FAMILY_ID) -c -o $@ $^
+  endif

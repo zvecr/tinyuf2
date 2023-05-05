@@ -494,6 +494,38 @@ int uf2_write_block (uint32_t block_no, uint8_t *data, WriteState *state)
 
   if (bl->familyID == BOARD_UF2_FAMILY_ID)
   {
+#ifdef BOARD_UF2_DEVICE_TYPE_ID
+    uint32_t deviceTypeID = 0;
+
+    if (bl->flags & UF2_FLAG_EXTENSIONS)
+    {
+      uint8_t* ext_data = &bl->data[bl->payloadSize];
+      uint8_t len = *ext_data;
+      while (len) {
+        if (len == 8) {
+          if (ext_data[1] == 0x29 && ext_data[2] == 0xa7 && ext_data[3] == 0xc8) {
+            deviceTypeID = ((uint32_t)ext_data[7] << 24) | ((uint32_t)ext_data[6] << 16) | ((uint32_t)ext_data[5] << 8) | ext_data[4];
+            break;
+          }
+        }
+
+        uint8_t ext_len = (len + 4 - 1) / 4 * 4;
+        ext_data += ext_len;
+        len = *ext_data;
+      }
+    }
+#if 0
+    if (deviceTypeID == 0)
+    {
+      // not found - do nothing?
+    }
+    else
+#endif
+    if (deviceTypeID != BOARD_UF2_DEVICE_TYPE_ID)
+    {
+      return -1;
+    }
+#endif
     // generic family ID
     board_flash_write(bl->targetAddr, bl->data, bl->payloadSize);
   }else

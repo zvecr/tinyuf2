@@ -72,6 +72,7 @@ SOFTWARE.
 // If set, the block is "comment" and should not be flashed to the device
 #define UF2_FLAG_NOFLASH    0x00000001
 #define UF2_FLAG_FAMILYID   0x00002000
+#define UF2_FLAG_EXTENSIONS 0x00008000
 
 #define MAX_BLOCKS (CFG_UF2_FLASH_SIZE / 256 + 100)
 typedef struct {

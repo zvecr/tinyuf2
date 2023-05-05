@@ -60,6 +60,18 @@ static volatile uint32_t _timer_count = 0;
 //--------------------------------------------------------------------+
 static bool check_dfu_mode(void);
 
+void board_wait_ms(uint16_t ms) {
+  uint32_t start = _timer_count;
+  while(_timer_count < (start + ms)) {}
+}
+
+#if TINYUF2_PROTECT_BOOTLOADER
+__attribute__((weak)) bool board_should_protect_bootloader(void)
+{
+  return true;
+}
+#endif
+
 int main(void)
 {
   board_init();
@@ -67,7 +79,10 @@ int main(void)
   TU_LOG1("TinyUF2\r\n");
 
 #if TINYUF2_PROTECT_BOOTLOADER
-  board_flash_protect_bootloader(true);
+  if (board_should_protect_bootloader())
+  {
+    board_flash_protect_bootloader(true);
+  }
 #endif
 
   // if not DFU mode, jump to App
@@ -190,7 +205,7 @@ void tud_umount_cb(void)
 //--------------------------------------------------------------------+
 // USB HID
 //--------------------------------------------------------------------+
-
+#if CFG_TUD_HID
 // Invoked when received GET_REPORT control request
 // Application must fill buffer report's content and return its length.
 // Return zero will cause the stack to STALL request
@@ -217,11 +232,13 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
   (void) buffer;
   (void) bufsize;
 }
+#endif
 
 //--------------------------------------------------------------------+
 // Indicator
 //--------------------------------------------------------------------+
 
+#if 0
 static uint32_t _indicator_state = STATE_BOOTLOADER_STARTED;
 static uint8_t _indicator_rgb[3];
 
@@ -255,11 +272,17 @@ void indicator_set(uint32_t state)
     default: break; // nothing to do
   }
 }
+#else
+void indicator_set(uint32_t state)
+{
+  (void)state;
+}
+#endif
 
 void board_timer_handler(void)
 {
   _timer_count++;
-
+#if 0
   switch (_indicator_state)
   {
     case STATE_USB_UNPLUGGED:
@@ -292,6 +315,7 @@ void board_timer_handler(void)
 
     default: break; // nothing to do
   }
+#endif
 }
 
 //--------------------------------------------------------------------+

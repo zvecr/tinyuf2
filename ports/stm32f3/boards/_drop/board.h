@@ -29,9 +29,9 @@
 // LED
 //--------------------------------------------------------------------+
 
-#define LED_PORT              GPIOE
-#define LED_PIN               GPIO_PIN_10
-#define LED_STATE_ON          1
+// #define LED_PORT              GPIOE
+// #define LED_PIN               GPIO_PIN_10
+// #define LED_STATE_ON          1
 
 //#define BUTTON_PORT           GPIOA
 //#define BUTTON_PIN            GPIO_PIN_0
@@ -57,22 +57,27 @@
 //--------------------------------------------------------------------+
 
 // Flash size of the board
-#define BOARD_FLASH_SIZE  (256 * 1024)
+#define BOARD_FLASH_SIZE  (128 * 1024)
 
 //--------------------------------------------------------------------+
 // USB UF2
 //--------------------------------------------------------------------+
 
-// TODO VID/PID aren't assigned for this board
-#define USB_VID           0xcafe
-#define USB_PID           0xffff
-#define USB_MANUFACTURER  "ST"
-#define USB_PRODUCT       "STM32F303 Discovery"
+#define USB_VID           0x359B
+#define USB_MANUFACTURER  "Drop Inc."
+#define USB_PRODUCT       USB_PRODUCT_NAME " BL"
 
-#define UF2_PRODUCT_NAME  USB_MANUFACTURER " " USB_PRODUCT
-#define UF2_BOARD_ID      "STM32F303 discovery"
-#define UF2_VOLUME_LABEL  "F303BOOT"
-#define UF2_INDEX_URL     "https://www.st.com/en/evaluation-tools/stm32f3discovery.html"
+#define UF2_VOLUME_LABEL  "DROP_BOOT"
+#define UF2_INDEX_URL     "https://drop.com/home"
+#define UF2_PRODUCT_NAME  USB_MANUFACTURER " " USB_PRODUCT_NAME
+#define UF2_BOARD_ID      USB_PRODUCT_NAME
+
+#ifndef USB_PID
+  #define USB_PID           0x0000
+#endif
+#ifndef USB_PRODUCT_NAME
+  #define USB_PRODUCT_NAME  "Device"
+#endif
 
 //--------------------------------------------------------------------+
 // UART
@@ -80,7 +85,6 @@
 
 #define UART_DEV              USART1
 #define UART_CLOCK_ENABLE     __HAL_RCC_USART1_CLK_ENABLE
-#define UART_CLOCK_DISABLE    __HAL_RCC_USART1_CLK_DISABLE
 #define UART_GPIO_PORT        GPIOC
 #define UART_GPIO_AF          GPIO_AF7_USART1
 #define UART_TX_PIN           GPIO_PIN_4
@@ -98,7 +102,7 @@ static inline void clock_init(void)
   /* Enable HSE Oscillator and activate PLL with HSE as source */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV2;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
