@@ -18,7 +18,8 @@
 	url = https://github.com/espressif/esp-idf.git
 [submodule "lib/uf2"]
 	path = lib/uf2
-	url = https://github.com/microsoft/uf2.git
+	url = https://github.com/zvecr/uf2.git
+	branch = device_type_id
 [submodule "lib/sct_neopixel"]
 	path = lib/sct_neopixel
 	url = https://github.com/gsteiert/sct_neopixel
