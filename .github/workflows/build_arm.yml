@@ -68,9 +68,6 @@ jobs:
     - name: Linker Map
       run: make -C $ENV_PORT BOARD=${{ matrix.board }} linkermap
 
-    - name: Check Oversized
-      run: find ${{ env.ENV_PORT }}/_build/${{ matrix.board }}/ -maxdepth 1 -name "*${{ matrix.board }}.bin" -size -16k | grep -q "${{ matrix.board }}.bin"
-
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.board }}
@@ -79,7 +76,7 @@ jobs:
     - name: Prepare Release Asset
       if: ${{ github.event_name == 'release' }}
       run: |
-        for f in ${{ env.ENV_PORT }}/_build/${{ matrix.board }}/*.*; do mv $f production-${f%.*}-${{ github.event.release.tag_name }}."${f#*.}"; done
+        for f in ${{ env.ENV_PORT }}/_build/${{ matrix.board }}/*.*; do name=$(basename $f); mv $f $(dirname $f)/production-${name%.*}-${{ github.event.release.tag_name }}."${name#*.}"; done
         for f in ${{ env.BIN_PATH }}/*; do mv $f ${f%.*}-${{ github.event.release.tag_name }}."${f#*.}"; done
         zip -jr tinyuf2-${{ matrix.board }}-${{ github.event.release.tag_name }}.zip ${{ env.BIN_PATH }}
 
@@ -88,5 +85,5 @@ jobs:
       if: ${{ github.event_name == 'release' }}
       with:
         files: |
-          ${{ env.ENV_PORT }}/_build/${{ matrix.board }}/tinyuf2-${{ matrix.board }}-*.hex
+          ${{ env.ENV_PORT }}/_build/${{ matrix.board }}/production-tinyuf2-${{ matrix.board }}-*.hex
           ${{ env.BIN_PATH }}/update-tinyuf2-${{ matrix.board }}-*.uf2

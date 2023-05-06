@@ -20,10 +20,9 @@ Updates are provided in `.uf2` format on the [releases](https://github.com/zvecr
 | CTRL v2  | `ctrlv2`  |
 | SHIFT v2 | `shiftv2` |
 
-
 ### Setup
 
-A working `arm-none-eabi-gcc` environment is required. Version `X` used in CI is known to provide compatible binaries.
+A working `arm-none-eabi-gcc` environment is required. Version `12.2.0` used in CI is known to provide compatible binaries.
 
 ```
 make -C ports/stm32f3 BOARD=<board> get-deps
@@ -46,7 +45,12 @@ TODO:
 * undo overwrite protection
   * CLI alternative to STM32CubeProgrammer?
 
-Flash:
+Production files are provided in `.hex` format on the [releases](https://github.com/zvecr/tinyuf2/releases/latest) page. These files can be flashed with the following command.
+```
+st-flash --reset --format ihex write tinyuf2-altv2-0.0.1-production.hex
+```
+
+To compile/flash from source:
 ```
 make -C ports/stm32f3 BOARD=<board> get-deps clean flash
 ```
