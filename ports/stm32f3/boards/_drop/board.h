@@ -63,21 +63,26 @@
 // USB UF2
 //--------------------------------------------------------------------+
 
-#define USB_VID           0x359B
-#define USB_MANUFACTURER  "Drop Inc."
-#define USB_PRODUCT       USB_PRODUCT_NAME " BL"
-
-#define UF2_VOLUME_LABEL  "DROP_BOOT"
-#define UF2_INDEX_URL     "https://drop.com/home"
-#define UF2_PRODUCT_NAME  USB_MANUFACTURER " " USB_PRODUCT_NAME
-#define UF2_BOARD_ID      USB_PRODUCT_NAME
-
 #ifndef USB_PID
   #define USB_PID           0x0000
 #endif
 #ifndef USB_PRODUCT_NAME
   #define USB_PRODUCT_NAME  "Device"
 #endif
+
+#define USB_VID           0x359B
+#define USB_MANUFACTURER  "Drop Inc."
+#define USB_PRODUCT       USB_PRODUCT_NAME " Bootloader"
+
+#ifndef UF2_BOARD_ID
+  #define UF2_BOARD_ID      "DEVICE"
+#endif
+#ifndef UF2_INDEX_URL
+  #define UF2_INDEX_URL     "https://drop.com/home"
+#endif
+
+#define UF2_PRODUCT_NAME  USB_MANUFACTURER " " USB_PRODUCT_NAME
+#define UF2_VOLUME_LABEL  UF2_BOARD_ID
 
 //--------------------------------------------------------------------+
 // UART

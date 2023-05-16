@@ -20,10 +20,11 @@ include ../../../rules.mk
 
 self-update: $(BUILD)/$(OUTNAME).uf2
 
+UF2CONV_ARGS ?=
+ifdef UF2_DEVICE_TYPE_ID
+  UF2CONV_ARGS += --device-type $(UF2_DEVICE_TYPE_ID)
+endif
+
 $(BUILD)/$(OUTNAME).uf2: $(BUILD)/$(OUTNAME).hex
 	@echo CREATE $@
-  ifdef UF2_DEVICE_TYPE_ID
-	$(PYTHON3) $(TOP)/lib/uf2/utils/uf2conv.py -f $(UF2_FAMILY_ID) -t $(UF2_DEVICE_TYPE_ID) -c -o $@ $^
-  else
-	$(PYTHON3) $(TOP)/lib/uf2/utils/uf2conv.py -f $(UF2_FAMILY_ID) -c -o $@ $^
-  endif
+	$(PYTHON3) $(TOP)/lib/uf2/utils/uf2conv.py -f $(UF2_FAMILY_ID) $(UF2CONV_ARGS) -c -o $@ $^
