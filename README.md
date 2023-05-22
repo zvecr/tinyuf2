@@ -47,7 +47,7 @@ TODO:
 
 Production files are provided in `.hex` format on the [releases](https://github.com/zvecr/tinyuf2/releases/latest) page. These files can be flashed with the following command.
 ```
-st-flash --reset --format ihex write tinyuf2-altv2-0.0.1-production.hex
+st-flash --reset --format ihex write production-tinyuf2-altv2-drop-1.0.0.hex
 ```
 
 To compile/flash from source:
